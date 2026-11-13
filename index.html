@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TITAN PULSE | Gym Management System & Fitness Club</title>
+  <meta name="description" content="High-performance fitness club and all-in-one gym management system. Track subscriptions, check in members, and manage classes.">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              lime: '#bef264',
+              'lime-hover': '#a3e635',
+              dark: '#0a0c10',
+              card: '#12151e',
+              surface: '#181c28',
+              orange: '#f97316'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0a0c10] text-gray-100 min-h-screen selection:bg-lime-400 selection:text-black">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none"></div>
+
+  <!-- Main Navigation Bar -->
+  <header class="sticky top-0 z-40 w-full glass-panel border-b border-neutral-800/80 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Logo -->
+      <a href="#home" class="action-go-public flex items-center gap-3 group">
+        <div class="w-11 h-11 rounded-xl bg-lime-400 text-black flex items-center justify-center font-extrabold text-xl shadow-lg shadow-lime-400/20 group-hover:scale-105 transition-transform">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29l-1.43-1.43zM4.14 6.98l1.43-1.43 1.43 1.43L5.57 8.41 4.14 6.98zm12.88 12.88l-1.43 1.43-1.43-1.43 1.43-1.43 1.43 1.43z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="brand-font font-black text-2xl tracking-wider text-white flex items-center gap-1.5">
+            TITAN<span class="text-lime-400">PULSE</span>
+          </span>
+          <span class="text-[10px] tracking-widest uppercase font-semibold text-gray-400 block -mt-1">Fitness Club & System</span>
+        </div>
+      </a>
+
+      <!-- Public Links (Desktop) -->
+      <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-gray-300">
+        <a href="#home" class="action-go-public hover:text-lime-400 transition-colors">Home</a>
+        <a href="#classes" class="action-go-public hover:text-lime-400 transition-colors">Classes</a>
+        <a href="#pricing" class="action-go-public hover:text-lime-400 transition-colors">Memberships</a>
+        <a href="#bmi" class="action-go-public hover:text-lime-400 transition-colors">BMI Tool</a>
+        <a href="#trainers" class="action-go-public hover:text-lime-400 transition-colors">Coaches</a>
+        <a href="#contact" class="action-go-public hover:text-lime-400 transition-colors">Contact</a>
+      </nav>
+
+      <!-- Right CTAs & Switcher -->
+      <div class="flex items-center gap-3">
+        <!-- Live Gym Status Pill -->
+        <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-neutral-900 border border-neutral-800 text-xs text-gray-300">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span class="font-medium text-emerald-400">24/7 OPEN NOW</span>
+        </div>
+
+        <!-- Portal Toggle Pill -->
+        <div class="bg-neutral-900/90 p-1 rounded-xl border border-neutral-800 flex items-center gap-1 text-xs font-semibold">
+          <button class="action-go-public px-3 py-1.5 rounded-lg transition-all nav-indicator-public text-lime-400 font-bold bg-neutral-800/80 shadow-sm">
+            Website
+          </button>
+          <button class="action-go-dashboard px-3 py-1.5 rounded-lg transition-all nav-indicator-dashboard text-gray-400 hover:text-white flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-lime-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            <span>Dashboard</span>
+          </button>
+        </div>
+
+        <!-- Mobile Menu Trigger -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-neutral-900 text-gray-300 hover:text-white border border-neutral-800">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden glass-panel border-b border-neutral-800 px-6 py-4 space-y-3">
+      <a href="#home" class="action-go-public block text-sm font-medium hover:text-lime-400">Home</a>
+      <a href="#classes" class="action-go-public block text-sm font-medium hover:text-lime-400">Classes</a>
+      <a href="#pricing" class="action-go-public block text-sm font-medium hover:text-lime-400">Memberships</a>
+      <a href="#bmi" class="action-go-public block text-sm font-medium hover:text-lime-400">BMI Tool</a>
+      <a href="#trainers" class="action-go-public block text-sm font-medium hover:text-lime-400">Coaches</a>
+      <a href="#contact" class="action-go-public block text-sm font-medium hover:text-lime-400">Contact</a>
+      <div class="pt-3 border-t border-neutral-800 flex gap-2">
+        <button class="action-go-dashboard w-full py-2.5 rounded-xl bg-lime-400 text-black font-bold text-xs tracking-wider flex items-center justify-center gap-1.5 shadow-lg">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          Open Admin System
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- VIEW 1: PUBLIC LANDING PAGE WEBSITE        -->
+  <!-- ========================================== -->
+  <main id="view-public" class="transition-all duration-300">
+    
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-12 pb-24 md:pt-20 md:pb-32 bg-mesh-dark overflow-hidden">
+      <!-- Glow ambient background circles -->
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-lime-400/10 rounded-full blur-[140px] pointer-events-none"></div>
+      <div class="absolute top-1/3 right-10 w-[400px] h-[400px] bg-orange-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <!-- Left Column: Copy & Actions -->
+          <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lime-400/10 border border-lime-400/30 text-lime-400 text-xs font-bold tracking-wide uppercase">
+              <span class="w-2 h-2 rounded-full bg-lime-400"></span>
+              The Next Evolution in Fitness & Body Armor
+            </div>
+
+            <h1 class="brand-font text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.08]">
+              FORGE YOUR <br class="hidden sm:inline">
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 via-lime-200 to-white text-glow-lime">ULTIMATE</span> PHYSIQUE.
+            </h1>
+
+            <p class="text-gray-400 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              Experience championship-grade equipment, elite Olympic coaching, and an intelligent club management ecosystem designed to shatter your limits.
+            </p>
+
+            <!-- Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+              <a href="#pricing" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-lime-400 hover:bg-lime-300 text-black font-extrabold text-sm tracking-wider uppercase transition-all duration-200 shadow-xl shadow-lime-400/25 flex items-center justify-center gap-2">
+                <span>Join The Tribe</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </a>
+              <button class="action-go-dashboard w-full sm:w-auto px-7 py-4 rounded-xl bg-neutral-900/90 hover:bg-neutral-800 text-white font-bold text-sm tracking-wide border border-neutral-700/80 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-4 h-4 text-lime-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <span>Launch Admin System</span>
+              </button>
+            </div>
+
+            <!-- Trust proof badges -->
+            <div class="pt-6 border-t border-neutral-800/80 flex items-center justify-center lg:justify-start gap-6 text-xs text-gray-400">
+              <div class="flex items-center gap-2">
+                <div class="text-lime-400 font-bold text-base">500+</div>
+                <span>Active Athletes</span>
+              </div>
+              <div class="h-4 w-px bg-neutral-800"></div>
+              <div class="flex items-center gap-2">
+                <div class="text-lime-400 font-bold text-base">15+</div>
+                <span>Pro Coaches</span>
+              </div>
+              <div class="h-4 w-px bg-neutral-800"></div>
+              <div class="flex items-center gap-1.5">
+                <div class="flex text-amber-400">★★★★★</div>
+                <span class="font-bold text-white">4.9/5</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Interactive Fitness Visual Card -->
+          <div class="lg:col-span-5 relative">
+            <div class="relative mx-auto max-w-md">
+              
+              <!-- Ambient Border Glow -->
+              <div class="absolute -inset-1 rounded-3xl bg-gradient-to-r from-lime-400/30 to-orange-500/20 blur-xl opacity-75"></div>
+
+              <div class="relative rounded-3xl glass-card p-6 sm:p-8 border border-neutral-700/80 space-y-6">
+                <!-- Card Header -->
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-neutral-800 border border-neutral-700 flex items-center justify-center text-lime-400">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-white text-base">Club Activity Live</h4>
+                      <p class="text-xs text-gray-400">Peak energy hours right now</p>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    ● High Intensity
+                  </span>
+                </div>
+
+                <!-- Live Gym Stats Preview Box -->
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="p-4 rounded-2xl bg-neutral-900/90 border border-neutral-800">
+                    <span class="text-xs text-gray-400 block mb-1">Today's Check-ins</span>
+                    <span class="brand-font text-2xl font-black text-lime-400">142</span>
+                    <span class="text-[10px] text-gray-500 block mt-1">+18 in last hour</span>
+                  </div>
+                  <div class="p-4 rounded-2xl bg-neutral-900/90 border border-neutral-800">
+                    <span class="text-xs text-gray-400 block mb-1">Floor Occupancy</span>
+                    <span class="brand-font text-2xl font-black text-orange-400">68%</span>
+                    <span class="text-[10px] text-gray-500 block mt-1">Optimal lifting space</span>
+                  </div>
+                </div>
+
+                <!-- Upcoming Class Pill -->
+                <div class="p-4 rounded-2xl bg-gradient-to-r from-neutral-900 to-neutral-800 border border-neutral-700/60 flex items-center justify-between">
+                  <div>
+                    <span class="text-[10px] uppercase font-bold text-lime-400 tracking-wider">Next Session in 35m</span>
+                    <h5 class="text-sm font-bold text-white mt-0.5">Apex HIIT & MetCon</h5>
+                    <p class="text-xs text-gray-400">Coach Maya Lin • Studio 01</p>
+                  </div>
+                  <button onclick="PublicSite.bookClassPreview('Apex HIIT & MetCon')" class="px-3 py-1.5 rounded-lg bg-lime-400 hover:bg-lime-300 text-black font-bold text-xs shadow">
+                    Book Spot
+                  </button>
+                </div>
+
+                <!-- Quick Admin Demo Hook -->
+                <div class="pt-2 text-center">
+                  <button class="action-go-dashboard text-xs text-gray-400 hover:text-lime-400 transition-colors inline-flex items-center gap-1">
+                    <span>Looking for member check-in & admin portal?</span>
+                    <span class="underline font-semibold text-lime-400">Click here →</span>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Ribbon -->
+    <section class="border-y border-neutral-800/80 bg-neutral-950/60 py-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div>
+            <div class="brand-font text-3xl sm:text-4xl font-black text-white">12,000<span class="text-lime-400">+</span></div>
+            <div class="text-xs text-gray-400 mt-1 uppercase font-semibold tracking-wider">Sq.Ft Premium Facility</div>
+          </div>
+          <div>
+            <div class="brand-font text-3xl sm:text-4xl font-black text-white">35<span class="text-lime-400">+</span></div>
+            <div class="text-xs text-gray-400 mt-1 uppercase font-semibold tracking-wider">Weekly Classes</div>
+          </div>
+          <div>
+            <div class="brand-font text-3xl sm:text-4xl font-black text-white">100<span class="text-lime-400">%</span></div>
+            <div class="text-xs text-gray-400 mt-1 uppercase font-semibold tracking-wider">Olympic Equipment</div>
+          </div>
+          <div>
+            <div class="brand-font text-3xl sm:text-4xl font-black text-white">24<span class="text-lime-400">/7</span></div>
+            <div class="text-xs text-gray-400 mt-1 uppercase font-semibold tracking-wider">Biometric Access</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Classes & Programs Section -->
+    <section id="classes" class="py-24 bg-[#0a0c10] relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-lime-400/10 text-lime-400 border border-lime-400/20">
+            Training Programs
+          </span>
+          <h2 class="brand-font text-3xl sm:text-5xl font-black text-white mt-3">
+            BUILT FOR RELENTLESS RESULTS
+          </h2>
+          <p class="text-gray-400 text-sm sm:text-base mt-3">
+            From heavy Olympic barbell platforms to metabolic burnout circuits, choose the program tailored to your physical peak.
+          </p>
+
+          <!-- Filter Pills -->
+          <div class="flex flex-wrap items-center justify-center gap-2 mt-8">
+            <button data-category="all" class="class-filter-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-lime-400 text-black shadow-md">
+              All Classes
+            </button>
+            <button data-category="strength" class="class-filter-btn px-4 py-2 rounded-xl text-xs font-medium text-gray-400 hover:text-white bg-neutral-900 border border-neutral-800 transition-all">
+              Strength & Power
+            </button>
+            <button data-category="hiit" class="class-filter-btn px-4 py-2 rounded-xl text-xs font-medium text-gray-400 hover:text-white bg-neutral-900 border border-neutral-800 transition-all">
+              HIIT & MetCon
+            </button>
+            <button data-category="combat" class="class-filter-btn px-4 py-2 rounded-xl text-xs font-medium text-gray-400 hover:text-white bg-neutral-900 border border-neutral-800 transition-all">
+              Boxing & Combat
+            </button>
+            <button data-category="recovery" class="class-filter-btn px-4 py-2 rounded-xl text-xs font-medium text-gray-400 hover:text-white bg-neutral-900 border border-neutral-800 transition-all">
+              Mobility & Recovery
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Classes Grid -->
+        <div id="classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Loaded dynamically via js/public.js -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Interactive BMI Calculator Section -->
+    <section id="bmi" class="py-20 bg-neutral-950 border-t border-neutral-800/70">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="glass-card rounded-3xl p-8 sm:p-12 border border-neutral-700/70 relative overflow-hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <div class="lg:col-span-6 space-y-4">
+              <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-orange-500/10 text-orange-400 border border-orange-500/20">
+                Interactive Health Metric
+              </span>
+              <h3 class="brand-font text-3xl font-black text-white">
+                CALCULATE YOUR BODY MASS INDEX (BMI)
+              </h3>
+              <p class="text-sm text-gray-400 leading-relaxed">
+                Gain instant clarity on your body composition tier and discover our personalized workout advice to achieve your physical peak.
+              </p>
+
+              <form id="bmi-form" class="space-y-4 pt-2">
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Height (cm)</label>
+                    <input type="number" id="bmi-height" required placeholder="e.g. 178" min="100" max="250" class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-sm focus:border-lime-400 focus:outline-none">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Weight (kg)</label>
+                    <input type="number" id="bmi-weight" required placeholder="e.g. 75" min="30" max="300" step="0.5" class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-sm focus:border-lime-400 focus:outline-none">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Age</label>
+                    <input type="number" id="bmi-age" placeholder="e.g. 26" min="14" max="100" class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-sm focus:border-lime-400 focus:outline-none">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Gender</label>
+                    <select id="bmi-gender" class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-sm focus:border-lime-400 focus:outline-none">
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-xl bg-lime-400 hover:bg-lime-300 text-black font-extrabold text-xs tracking-wider uppercase transition-all shadow-lg shadow-lime-400/20">
+                  Compute BMI Score
+                </button>
+              </form>
+            </div>
+
+            <!-- Result Box -->
+            <div class="lg:col-span-6">
+              <div id="bmi-result-box" class="hidden p-6 rounded-2xl bg-neutral-900/90 border border-neutral-700 text-center space-y-4 animate-fade-in-up">
+                <span class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Your Body Mass Score</span>
+                <div id="bmi-score" class="brand-font text-5xl font-black text-lime-400">22.4</div>
+                <div id="bmi-category" class="font-bold text-sm text-lime-400">Healthy & Optimal Weight</div>
+                <div class="p-4 rounded-xl bg-neutral-950/80 border border-neutral-800 text-left">
+                  <span class="text-xs font-bold text-white block mb-1">Titan Coaching Recommendation:</span>
+                  <p id="bmi-advice" class="text-xs text-gray-400 leading-relaxed"></p>
+                </div>
+                <button onclick="PublicSite.selectPlanFromPricing('Pro Beast')" class="w-full py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-semibold text-xs border border-neutral-700 transition-colors">
+                  Join with Recommended Plan →
+                </button>
+              </div>
+
+              <!-- Default Placeholder when empty -->
+              <div id="bmi-placeholder" class="p-8 rounded-2xl bg-neutral-900/40 border border-dashed border-neutral-800 text-center space-y-3">
+                <div class="w-12 h-12 rounded-full bg-neutral-800/80 text-lime-400 flex items-center justify-center mx-auto">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h4 class="font-bold text-white text-base">Instant Fitness Diagnosis</h4>
+                <p class="text-xs text-gray-500 max-w-xs mx-auto">Enter your metrics on the left to view your BMI category, optimal weight zone, and tailored class guidance.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Membership Pricing Plans Section -->
+    <section id="pricing" class="py-24 bg-[#0a0c10] relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-lime-400/10 text-lime-400 border border-lime-400/20">
+            Transparent Pricing
+          </span>
+          <h2 class="brand-font text-3xl sm:text-5xl font-black text-white mt-3">
+            CHOOSE YOUR COMMITMENT LEVEL
+          </h2>
+          <p class="text-gray-400 text-sm sm:text-base mt-3">
+            No hidden registration fees. Unlimited access to world-class coaching and biometric facilities.
+          </p>
+
+          <!-- Monthly / Annual Toggle Switch -->
+          <div class="flex items-center justify-center gap-4 mt-8">
+            <span class="text-sm font-semibold text-gray-300">Monthly</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="billing-toggle" class="sr-only peer">
+              <div class="w-14 h-7 bg-neutral-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-lime-400"></div>
+            </label>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-semibold text-gray-300">Annual</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-orange-500/20 text-orange-400 border border-orange-500/30">
+                Save 20% + 1 Mo Free
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Tier Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+          
+          <!-- Plan 1: Starter -->
+          <div class="glass-card rounded-3xl p-8 border border-neutral-800 flex flex-col justify-between">
+            <div>
+              <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Starter Pass</div>
+              <h3 class="text-2xl font-black text-white">Starter</h3>
+              <p class="text-xs text-gray-400 mt-2">Essential club access for independent self-driven lifters.</p>
+
+              <div class="my-6">
+                <span id="price-starter" class="brand-font text-4xl sm:text-5xl font-black text-white">$29</span>
+                <span id="period-starter" class="text-sm text-gray-400 font-medium">/month</span>
+              </div>
+
+              <ul class="space-y-3 text-xs text-gray-300 mb-8 border-t border-neutral-800/80 pt-6">
+                <li class="flex items-center gap-2.5">
+                  <svg class="w-4 h-4 text-lime-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>Full Gym Floor & Free Weights Access</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="w-4 h-4 text-lime-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>Locker Room & High-Pressure Showers</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="w-4 h-4 text-lime-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>Free Club High-Speed WiFi</span>
+                </li>
+                <li class="flex items-center gap-2.5 text-gray-500 line-through">
+                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                  <span>Group Classes (HIIT, Boxing)</span>
+                </li>
+                <li class="flex items-center gap-2.5 text-gray-500 line-through">
+                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                  <span>Sauna & Cold Plunge Lounge</span>
+                </li>
+              </ul>
+            </div>
+
+            <button onclick="PublicSite.selectPlanFromPricing('Starter')" class="w-full py-3.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs uppercase tracking-wider transition-colors border border-neutral-700">
+              Select Starter
+            </button>
+          </div>
+
+          <!-- Plan 2: Pro Beast (Featured) -->
+          <div class="glass-card rounded-3xl p-8 border-2 border-lime-400 relative glow-lime flex flex-col justify-between transform md:-translate-y-2 bg-gradient-to-b from-neutral-900/90 to-neutral-950">
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-lime-400 text-black font-extrabold text-[11px] tracking-wider uppercase shadow-md">
+              Most Popular
+            </div>
+
+            <div>
+              <div class="text-xs font-bold text-lime-400 uppercase tracking-widest mb-1">Warrior Tier</div>
+              <h3 class="text-2xl font-black text-white">Pro Beast</h3>
+              <p class="text-xs text-gray-400 mt-2">Unlimited access to heavy iron, studio classes & wellness recovery.</p>
+
+              <div class="my-6">
+                <span id="price-pro" class="brand-font text-4xl sm:text-5xl font-black text-lime-400">$59</span>
+                <span id="period-pro" class="text-sm text-gray-400 font-medium">/month</span>
+              </div>
+
+              <ul class="space-y-3 text-xs text-gray-300 mb-8 border-t border-neutral-800/80 pt-6">
+                <li class="flex items-center gap-2.5">
+                  <svg class="w-4 h-4 text-lime-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span class="font-semibold text-white">All Starter Tier Privileges</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="w-4 h-4 text-lime-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>Unlimited HIIT, CrossFit & Boxing Classes</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="w-4 h-4 text-lime-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>Finnish Dry Sauna & Hydro-Massage</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="w-4 h-4 text-lime-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>2 Free Guest Passes Every Month</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="w-4 h-4 text-lime-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>Free Protein Shake on Weekends</span>
+                </li>
+              </ul>
+            </div>
+
+            <button onclick="PublicSite.selectPlanFromPricing('Pro Beast')" class="w-full py-3.5 rounded-xl bg-lime-400 hover:bg-lime-300 text-black font-extrabold text-xs uppercase tracking-wider transition-all shadow-lg shadow-lime-400/25">
+              Claim Pro Beast
+            </button>
+          </div>
+
+          <!-- Plan 3: VIP Elite -->
+          <div class="glass-card rounded-3xl p-8 border border-neutral-800 flex flex-col justify-between">
+            <div>
+              <div class="text-xs font-bold text-orange-400 uppercase tracking-widest mb-1">Titan Elite</div>
+              <h3 class="text-2xl font-black text-white">VIP Elite</h3>
+              <p class="text-xs text-gray-400 mt-2">Comprehensive 1-on-1 coaching, nutrition plans & personal concierge.</p>
+
+              <div class="my-6">
+                <span id="price-vip" class="brand-font text-4xl sm:text-5xl font-black text-white">$99</span>
+                <span id="period-vip" class="text-sm text-gray-400 font-medium">/month</span>
+              </div>
+
+              <ul class="space-y-3 text-xs text-gray-300 mb-8 border-t border-neutral-800/80 pt-6">
+                <li class="flex items-center gap-2.5">
+                  <svg class="w-4 h-4 text-lime-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span class="font-semibold text-white">All Pro Beast Tier Benefits</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="w-4 h-4 text-lime-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>4 Dedicated 1-on-1 Coaching Sessions / Mo</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="w-4 h-4 text-lime-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>Custom Macrometer Nutrition Blueprint</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="w-4 h-4 text-lime-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>Reserved Private Locker & Laundry Service</span>
+                </li>
+                <li class="flex items-center gap-2.5">
+                  <svg class="w-4 h-4 text-lime-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>24/7 Direct WhatsApp Coach Support</span>
+                </li>
+              </ul>
+            </div>
+
+            <button onclick="PublicSite.selectPlanFromPricing('VIP Elite')" class="w-full py-3.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs uppercase tracking-wider transition-colors border border-neutral-700">
+              Select VIP Elite
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Elite Trainers Showcase -->
+    <section id="trainers" class="py-24 bg-neutral-950 border-t border-neutral-800/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-lime-400/10 text-lime-400 border border-lime-400/20">
+            Expert Leadership
+          </span>
+          <h2 class="brand-font text-3xl sm:text-5xl font-black text-white mt-3">
+            MEET THE ELITE COACHES
+          </h2>
+          <p class="text-gray-400 text-sm sm:text-base mt-3">
+            World-class master coaches and sports scientists dedicated to unlocking your peak athletic potential.
+          </p>
+        </div>
+
+        <div id="trainers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Populated dynamically via js/public.js -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Contact & FAQ Section -->
+    <section id="contact" class="py-24 bg-[#0a0c10] relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          
+          <!-- Left: Contact Details & FAQs -->
+          <div class="lg:col-span-6 space-y-8">
+            <div>
+              <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-lime-400/10 text-lime-400 border border-lime-400/20">
+                Get In Touch
+              </span>
+              <h2 class="brand-font text-3xl sm:text-4xl font-black text-white mt-3">
+                JOIN THE TITAN COMMUNITY
+              </h2>
+              <p class="text-gray-400 text-sm mt-2">
+                Have questions regarding memberships, training schedules, or personal coaching? Our team is available 24/7.
+              </p>
+            </div>
+
+            <!-- Contact Info Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="p-4 rounded-2xl bg-neutral-900/90 border border-neutral-800">
+                <div class="text-lime-400 mb-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </div>
+                <div class="font-bold text-white text-sm">Gym Headquarters</div>
+                <div class="text-xs text-gray-400 mt-1">Titan Tower, Olympic Boulevard, Floor 1-3</div>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-neutral-900/90 border border-neutral-800">
+                <div class="text-lime-400 mb-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                </div>
+                <div class="font-bold text-white text-sm">Support Hotline</div>
+                <div class="text-xs text-gray-400 mt-1">+971 4 800 TITAN / (800-84826)</div>
+              </div>
+            </div>
+
+            <!-- FAQs accordion -->
+            <div class="space-y-3 pt-2">
+              <h4 class="font-bold text-white text-sm uppercase tracking-wider text-gray-300">Frequently Asked Questions</h4>
+              
+              <details class="group rounded-xl bg-neutral-900/80 border border-neutral-800 p-3.5 text-xs">
+                <summary class="font-semibold text-gray-200 cursor-pointer flex justify-between items-center list-none">
+                  <span>Can I freeze my membership if I travel?</span>
+                  <span class="text-lime-400 transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <p class="text-gray-400 mt-2.5 leading-relaxed">Yes! Both Pro and VIP tiers allow up to 30 days of complimentary membership freeze per calendar year via the admin portal.</p>
+              </details>
+
+              <details class="group rounded-xl bg-neutral-900/80 border border-neutral-800 p-3.5 text-xs">
+                <summary class="font-semibold text-gray-200 cursor-pointer flex justify-between items-center list-none">
+                  <span>Is there biometric 24/7 entry?</span>
+                  <span class="text-lime-400 transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <p class="text-gray-400 mt-2.5 leading-relaxed">Yes, all registered active members receive an automated digital QR code and biometric turnstile authorization.</p>
+              </details>
+            </div>
+          </div>
+
+          <!-- Right: Interactive Inquiry Form -->
+          <div class="lg:col-span-6">
+            <div class="glass-card rounded-3xl p-8 border border-neutral-700/80">
+              <h3 class="brand-font text-2xl font-black text-white mb-2">Send an Inquiry or Schedule a Tour</h3>
+              <p class="text-xs text-gray-400 mb-6">Our concierge desk will respond within 60 minutes.</p>
+
+              <form id="contact-form" class="space-y-4">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">Full Name *</label>
+                  <input type="text" id="contact-name" required placeholder="Alex Mercer" class="w-full px-4 py-3 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-sm focus:border-lime-400 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Email Address *</label>
+                    <input type="email" id="contact-email" required placeholder="alex@example.com" class="w-full px-4 py-3 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-sm focus:border-lime-400 focus:outline-none">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Phone Number</label>
+                    <input type="tel" id="contact-phone" placeholder="+971 50 123 4567" class="w-full px-4 py-3 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-sm focus:border-lime-400 focus:outline-none">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">Message or Program Interest *</label>
+                  <textarea id="contact-message" required rows="4" placeholder="I would like to book a tour and inquire about VIP personal coaching..." class="w-full px-4 py-3 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-sm focus:border-lime-400 focus:outline-none resize-none"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-4 rounded-xl bg-lime-400 hover:bg-lime-300 text-black font-extrabold text-xs tracking-wider uppercase transition-all shadow-lg shadow-lime-400/20">
+                  Transmit Inquiry
+                </button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Public Footer -->
+    <footer class="bg-neutral-950 border-t border-neutral-800 py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center justify-between pb-8 border-b border-neutral-800">
+          
+          <div class="md:col-span-6 space-y-2">
+            <div class="brand-font font-black text-2xl tracking-wider text-white flex items-center gap-2">
+              TITAN<span class="text-lime-400">PULSE</span>
+            </div>
+            <p class="text-xs text-gray-500 max-w-sm">Empowering champions since 2018 with cutting-edge strength equipment, science-backed athletic programming, and seamless club management.</p>
+          </div>
+
+          <!-- Newsletter Form -->
+          <div class="md:col-span-6">
+            <form id="newsletter-form" class="flex flex-col sm:flex-row gap-2 max-w-md ml-auto">
+              <input type="email" required placeholder="Enter your email for athlete perks" class="px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-xs flex-1 focus:border-lime-400 focus:outline-none">
+              <button type="submit" class="px-5 py-2.5 rounded-xl bg-lime-400 hover:bg-lime-300 text-black font-bold text-xs shrink-0 transition-colors">
+                Subscribe
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+        <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+          <div>© 2026 Titan Pulse Fitness & Management Systems. All rights reserved.</div>
+          <div class="flex items-center gap-6">
+            <button class="action-go-dashboard text-lime-400 hover:underline font-semibold">Admin System Portal</button>
+            <a href="#home" class="hover:text-gray-300 transition-colors">Back to Top ↑</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+
+  <!-- ========================================== -->
+  <!-- VIEW 2: ADMIN DASHBOARD (THE SYSTEM)       -->
+  <!-- ========================================== -->
+  <main id="view-dashboard" class="hidden min-h-screen bg-neutral-950 pb-24">
+    
+    <!-- Top System Subheader -->
+    <div class="bg-neutral-900/60 border-b border-neutral-800/80 px-4 sm:px-6 lg:px-8 py-5">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+        
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-lime-400 animate-pulse"></span>
+            <h1 class="brand-font text-2xl font-black text-white tracking-wide">
+              GYM MANAGEMENT CONSOLE
+            </h1>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-neutral-800 text-gray-300 border border-neutral-700">v2.4 Live</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">Live subscription telemetry, real-time member check-ins, and club financials.</p>
+        </div>
+
+        <!-- Quick Top Actions -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <button onclick="Dashboard.openCreateModal()" class="px-4 py-2.5 rounded-xl bg-lime-400 hover:bg-lime-300 text-black font-extrabold text-xs tracking-wider uppercase transition-all shadow-lg shadow-lime-400/20 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            <span>Register Member</span>
+          </button>
+
+          <button id="export-csv-btn" class="px-3.5 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-gray-200 font-bold text-xs border border-neutral-700 transition-colors flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span>Export CSV</span>
+          </button>
+
+          <button id="reset-demo-btn" title="Restore Default Mock Data" class="px-3 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-gray-400 hover:text-white font-bold text-xs border border-neutral-700 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.033 8.033 0 01-15.357-2m15.357 2H15"/></svg>
+          </button>
+
+          <button class="action-go-public px-3.5 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-gray-300 font-bold text-xs border border-neutral-700 transition-colors flex items-center gap-1.5">
+            <span>Exit Console</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Dashboard Content Area -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
+      
+      <!-- KPI Stats Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        
+        <!-- Total Members -->
+        <div class="glass-card rounded-2xl p-5 border border-neutral-800">
+          <div class="flex items-center justify-between text-gray-400 mb-2">
+            <span class="text-xs font-semibold">Total Members</span>
+            <div class="w-8 h-8 rounded-lg bg-neutral-800 flex items-center justify-center text-lime-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            </div>
+          </div>
+          <div id="kpi-total-members" class="brand-font text-3xl font-black text-white">0</div>
+          <div class="text-[11px] text-lime-400 mt-1 font-medium flex items-center gap-1">
+            <span>↑ 14% this month</span>
+          </div>
+        </div>
+
+        <!-- Active Members -->
+        <div class="glass-card rounded-2xl p-5 border border-neutral-800">
+          <div class="flex items-center justify-between text-gray-400 mb-2">
+            <span class="text-xs font-semibold">Active Subscriptions</span>
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+          </div>
+          <div id="kpi-active-members" class="brand-font text-3xl font-black text-emerald-400">0</div>
+          <div id="kpi-active-rate" class="text-[11px] text-gray-400 mt-1 font-medium">0% Active</div>
+        </div>
+
+        <!-- Expired / Due -->
+        <div class="glass-card rounded-2xl p-5 border border-neutral-800">
+          <div class="flex items-center justify-between text-gray-400 mb-2">
+            <span class="text-xs font-semibold">Expired / Renewal Due</span>
+            <div class="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+          </div>
+          <div id="kpi-expired-members" class="brand-font text-3xl font-black text-rose-400">0</div>
+          <div class="text-[11px] text-gray-400 mt-1 font-medium">Require renewal</div>
+        </div>
+
+        <!-- Monthly Est. Revenue -->
+        <div class="glass-card rounded-2xl p-5 border border-neutral-800">
+          <div class="flex items-center justify-between text-gray-400 mb-2">
+            <span class="text-xs font-semibold">Monthly Run Rate</span>
+            <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+          </div>
+          <div id="kpi-monthly-revenue" class="brand-font text-3xl font-black text-white">$0</div>
+          <div class="text-[11px] text-gray-400 mt-1 font-medium">From active plans</div>
+        </div>
+
+        <!-- Today Check-ins -->
+        <div class="glass-card rounded-2xl p-5 border border-neutral-800">
+          <div class="flex items-center justify-between text-gray-400 mb-2">
+            <span class="text-xs font-semibold">Today's Check-ins</span>
+            <div class="w-8 h-8 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+          </div>
+          <div id="kpi-today-checkins" class="brand-font text-3xl font-black text-sky-400">0</div>
+          <div class="text-[11px] text-gray-400 mt-1 font-medium">Turnstile visits</div>
+        </div>
+
+      </div>
+
+      <!-- Quick Check-in Bar -->
+      <div class="p-4 rounded-2xl bg-neutral-900/90 border border-neutral-800 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <div class="w-9 h-9 rounded-xl bg-lime-400/20 text-lime-400 flex items-center justify-center font-bold">
+            ⚡
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-sm">Quick Front-Desk Check-In</h3>
+            <p class="text-xs text-gray-400">Scan turnstile code or enter Member ID / Full Name</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 w-full md:w-96">
+          <input type="text" id="quick-checkin-input" placeholder="e.g. GYM-801 or Ahmed..." class="w-full px-4 py-2.5 rounded-xl bg-neutral-950 border border-neutral-700 text-white text-xs focus:border-lime-400 focus:outline-none font-mono">
+          <button id="quick-checkin-btn" class="px-5 py-2.5 rounded-xl bg-lime-400 hover:bg-lime-300 text-black font-extrabold text-xs shrink-0 transition-colors shadow">
+            Check-In
+          </button>
+        </div>
+      </div>
+
+      <!-- Expiry Warning Drawer & Alerts -->
+      <div class="rounded-2xl bg-neutral-900/70 border border-neutral-800 p-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <h4 class="font-bold text-white text-xs uppercase tracking-wider">Subscription Attention & Renewal Watchlist</h4>
+          </div>
+          <span class="text-[11px] text-gray-400 font-mono">Expiring within 7 days</span>
+        </div>
+        <div id="expiry-alerts-list" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- Analytics Section (Canvas Charts) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Attendance Trend Bar Chart -->
+        <div class="lg:col-span-8 glass-card rounded-2xl p-6 border border-neutral-800">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h4 class="font-bold text-white text-sm">Weekly Gym Footfall Trend</h4>
+              <p class="text-xs text-gray-400">Total member check-in distribution by day</p>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-[11px] font-mono text-lime-400 bg-lime-400/10 border border-lime-400/20">
+              Live Tracker
+            </span>
+          </div>
+
+          <div class="w-full h-56 relative">
+            <canvas id="attendanceChartCanvas" class="w-full h-full"></canvas>
+          </div>
+        </div>
+
+        <!-- Plan Breakdown Donut Chart -->
+        <div class="lg:col-span-4 glass-card rounded-2xl p-6 border border-neutral-800 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="font-bold text-white text-sm">Plan Breakdown</h4>
+              <span class="text-xs text-gray-400">Active Shares</span>
+            </div>
+
+            <div class="w-full h-44 relative flex items-center justify-center">
+              <canvas id="planChartCanvas" class="w-full h-full"></canvas>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 text-center text-xs pt-4 border-t border-neutral-800/80 mt-2">
+              <div>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-lime-400 mb-1"></span>
+                <span class="block text-gray-400 text-[10px]">VIP</span>
+              </div>
+              <div>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-orange-500 mb-1"></span>
+                <span class="block text-gray-400 text-[10px]">Pro Beast</span>
+              </div>
+              <div>
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-sky-400 mb-1"></span>
+                <span class="block text-gray-400 text-[10px]">Starter</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Member Directory & Management Table -->
+      <div class="glass-card rounded-2xl border border-neutral-800 overflow-hidden shadow-xl">
+        
+        <!-- Controls Bar -->
+        <div class="p-5 border-b border-neutral-800/80 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          
+          <div>
+            <h3 class="font-bold text-white text-base">Member Directory & Subscriptions</h3>
+            <p class="text-xs text-gray-400 mt-0.5">Filter, monitor attendance, modify plans and renew memberships.</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            
+            <!-- Search Input -->
+            <div class="relative w-full sm:w-64">
+              <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <input type="text" id="member-search-input" placeholder="Search by name, ID, phone..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-xs focus:border-lime-400 focus:outline-none">
+            </div>
+
+            <!-- Status Filter Pills -->
+            <div class="flex items-center gap-1 bg-neutral-900/90 p-1 rounded-xl border border-neutral-800 text-xs">
+              <button data-status="all" class="status-filter-btn px-2.5 py-1 rounded-lg bg-lime-400 text-black font-bold">
+                All
+              </button>
+              <button data-status="active" class="status-filter-btn px-2.5 py-1 rounded-lg text-gray-400 hover:text-white bg-neutral-800/60">
+                Active
+              </button>
+              <button data-status="expired" class="status-filter-btn px-2.5 py-1 rounded-lg text-gray-400 hover:text-white bg-neutral-800/60">
+                Expired
+              </button>
+              <button data-status="pending" class="status-filter-btn px-2.5 py-1 rounded-lg text-gray-400 hover:text-white bg-neutral-800/60">
+                Pending
+              </button>
+            </div>
+
+            <!-- Plan Selector -->
+            <select id="filter-plan-select" class="px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-xs focus:border-lime-400 focus:outline-none">
+              <option value="all">All Membership Plans</option>
+              <option value="starter">Starter Pass</option>
+              <option value="pro">Pro Beast</option>
+              <option value="vip">VIP Elite</option>
+            </select>
+
+          </div>
+
+        </div>
+
+        <!-- Table Responsive Wrapper -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-neutral-800 bg-neutral-900/40 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                <th class="py-3.5 px-4">Member Name & ID</th>
+                <th class="py-3.5 px-4">Contact</th>
+                <th class="py-3.5 px-4">Plan Tier</th>
+                <th class="py-3.5 px-4">Expiry Date</th>
+                <th class="py-3.5 px-4 text-center">Visits</th>
+                <th class="py-3.5 px-4">Status</th>
+                <th class="py-3.5 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="members-table-body" class="divide-y divide-neutral-800/50 text-xs">
+              <!-- Populated dynamically via js/dashboard.js -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- ========================================== -->
+  <!-- MODALS: REGISTRATION & EDIT                -->
+  <!-- ========================================== -->
+  <div id="member-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="glass-card rounded-3xl max-w-lg w-full p-6 sm:p-8 border border-neutral-700/80 shadow-2xl space-y-6 max-h-[92vh] overflow-y-auto">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-neutral-800">
+        <div>
+          <h3 id="member-modal-title" class="brand-font text-xl font-bold text-white">Register New Member</h3>
+          <p class="text-xs text-gray-400 mt-0.5">Enter member credentials and assign subscription plan.</p>
+        </div>
+        <button id="close-member-modal" class="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-neutral-800 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Registration Form -->
+      <form id="member-modal-form" class="space-y-4">
+        
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Full Athlete Name *</label>
+          <input type="text" id="modal-field-name" required placeholder="e.g. Tariq Al-Hashimi" class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-xs focus:border-lime-400 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Email Address *</label>
+            <input type="email" id="modal-field-email" required placeholder="tariq@example.com" class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-xs focus:border-lime-400 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Phone Number *</label>
+            <input type="tel" id="modal-field-phone" required placeholder="+971 50 123 4567" class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-xs focus:border-lime-400 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Membership Plan *</label>
+            <select id="modal-field-plan" class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-xs focus:border-lime-400 focus:outline-none">
+              <option value="Starter">Starter Pass ($29/mo)</option>
+              <option value="Pro Beast" selected>Pro Beast ($59/mo)</option>
+              <option value="VIP Elite">VIP Elite ($99/mo)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Subscription Duration *</label>
+            <select id="modal-field-duration" class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-xs focus:border-lime-400 focus:outline-none">
+              <option value="1">1 Month</option>
+              <option value="3">3 Months</option>
+              <option value="6">6 Months</option>
+              <option value="12">12 Months (Annual)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Start Date *</label>
+            <input type="date" id="modal-field-start-date" required class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-xs focus:border-lime-400 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Calculated Expiry</label>
+            <div id="modal-end-date-preview" class="w-full px-4 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-lime-400 font-mono text-xs font-bold flex items-center">
+              YYYY-MM-DD
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Account Status</label>
+            <select id="modal-field-status" class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-xs focus:border-lime-400 focus:outline-none">
+              <option value="Active">Active</option>
+              <option value="Pending">Pending Payment</option>
+              <option value="Expired">Expired</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Payment Status</label>
+            <select id="modal-field-payment" class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-xs focus:border-lime-400 focus:outline-none">
+              <option value="Paid">Paid</option>
+              <option value="Pending">Pending</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Assigned Coach</label>
+            <select id="modal-field-trainer" class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-xs focus:border-lime-400 focus:outline-none">
+              <option value="None">No Coach Assigned</option>
+              <option value="Captain Alex Stone">Captain Alex Stone (Strength)</option>
+              <option value="Coach Maya Lin">Coach Maya Lin (HIIT)</option>
+              <option value="Coach Sam Vance">Coach Sam Vance (Combat)</option>
+              <option value="Elena Vasquez">Elena Vasquez (Mobility)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Emergency Contact</label>
+            <input type="tel" id="modal-field-emergency" placeholder="+971 50 999 0000" class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-xs focus:border-lime-400 focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Medical / Training Notes</label>
+          <input type="text" id="modal-field-notes" placeholder="e.g. Previous knee injury, aiming for hypertrophy" class="w-full px-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-700 text-white text-xs focus:border-lime-400 focus:outline-none">
+        </div>
+
+        <div class="pt-4 flex items-center justify-end gap-3 border-t border-neutral-800">
+          <button type="button" onclick="Dashboard.closeModal()" class="px-5 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-gray-300 font-semibold text-xs transition-colors">
+            Cancel
+          </button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-lime-400 hover:bg-lime-300 text-black font-extrabold text-xs tracking-wider uppercase transition-all shadow-md">
+            Save Member Record
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- MODALS: QUICK RENEWAL                      -->
+  <!-- ========================================== -->
+  <div id="renew-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="glass-card rounded-3xl max-w-md w-full p-6 sm:p-8 border border-neutral-700/80 shadow-2xl space-y-6">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-neutral-800">
+        <div>
+          <h3 class="brand-font text-lg font-bold text-white">Renew Membership</h3>
+          <p class="text-xs text-gray-400">Extend subscription validity</p>
+        </div>
+        <button id="close-renew-modal" class="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-neutral-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-2 text-xs">
+        <div class="flex justify-between">
+          <span class="text-gray-400">Athlete:</span>
+          <span id="renew-member-name" class="font-bold text-white"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-400">Member ID:</span>
+          <span id="renew-member-id" class="font-mono text-lime-400"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-400">Current Plan:</span>
+          <span id="renew-current-plan" class="font-semibold text-gray-200"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-400">Expiry Date:</span>
+          <span id="renew-current-expiry" class="font-mono text-rose-400"></span>
+        </div>
+      </div>
+
+      <div class="space-y-2.5">
+        <span class="text-xs font-semibold text-gray-300 block">Select Extension Package:</span>
+        <button onclick="Dashboard.applyRenewal(1)" class="w-full py-3 px-4 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 flex items-center justify-between text-xs font-bold text-white transition-colors">
+          <span>+1 Month Extension</span>
+          <span class="text-lime-400">30 Days</span>
+        </button>
+        <button onclick="Dashboard.applyRenewal(3)" class="w-full py-3 px-4 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 flex items-center justify-between text-xs font-bold text-white transition-colors">
+          <span>+3 Months Extension (Quarterly)</span>
+          <span class="text-lime-400">90 Days</span>
+        </button>
+        <button onclick="Dashboard.applyRenewal(12)" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-lime-400/20 to-neutral-900 hover:from-lime-400/30 border border-lime-400/50 flex items-center justify-between text-xs font-bold text-white transition-colors">
+          <span>+12 Months (Full Annual Pass)</span>
+          <span class="text-lime-400 font-extrabold">+1 Year ⚡</span>
+        </button>
+      </div>
+
+      <div class="pt-2 text-right">
+        <button onclick="Dashboard.closeRenewModal()" class="px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-gray-400 text-xs font-medium">
+          Cancel
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- Application Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/public.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
